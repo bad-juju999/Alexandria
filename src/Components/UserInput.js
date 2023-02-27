@@ -1,3 +1,4 @@
+import { addDoc, CollectionReference, getFirestore, collection, getDocs } from "firebase/firestore";
 import { useState } from "react";
 import Entry from "../Components/Entry";
 
@@ -16,21 +17,33 @@ function UserInput() {
     <Entry key="3" title="Art of Loving" author="Erich Fromm" />,
   ]);
 
+  const myDatabase = getFirestore();
+  const collectionReference = collection(myDatabase, "Books");
+  let books = [];
+
+  getDocs(collectionReference).then((snapshot) => {
+    snapshot.docs.forEach((doc) => {
+      books.push({ ...doc.data(), id: doc.id });
+    });
+    console.log(books);
+  });
+
   return (
     <div>
       <div className="inputContainer flex-center">
-        <label htmlFor="Title Name">Title Name:</label>
-        <input type="text" id="titleInput" />
+        <form className="flex-center">
+          <label htmlFor="Title Name">Title Name:</label>
+          <input type="text" id="titleInput" />
 
-        <label htmlFor="Author Name">Author Name:</label>
-        <input type="text" id="authorInput" />
+          <label htmlFor="Author Name">Author Name:</label>
+          <input type="text" id="authorInput" />
 
-        <label htmlFor="Author Name">Favorite Character:</label>
-        <input type="text" id="favCharacterInput" />
+          <label htmlFor="Author Name">Favorite Character:</label>
+          <input type="text" id="favCharacterInput" />
 
-        <label htmlFor="Author Name">Description & Extra Details:</label>
-        <input type="text" id="detailsInput" />
-
+          <label htmlFor="Author Name">Description & Extra Details:</label>
+          <input type="text" id="detailsInput" />
+        </form>
         <button
           className="submitButton"
           onClick={() => {
@@ -39,6 +52,11 @@ function UserInput() {
             let newAuthor = document.querySelector("#authorInput").value;
             let newCharacter = document.querySelector("#favCharacterInput").value;
             let newDetails = document.querySelector("#detailsInput").value;
+
+            addDoc(collectionReference, {
+              Title: newEntry,
+              Author: newAuthor,
+            });
 
             setEntryArray([
               <Entry

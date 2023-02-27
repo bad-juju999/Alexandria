@@ -6,7 +6,6 @@ import Menu from "./Components/Menu";
 function App() {
   return (
     <div className="App flex-center">
-      <Menu />
       <Heading />
       <UserInput />
     </div>
